@@ -7,16 +7,20 @@ const { TOKEN, CLIENT_ID, GUILDE_ID } = process.env
 //importação dos comandos
 const fs = require('node:fs')
 const path = require('node:path')
+//pega o caminho da pasta commands e seta na variavel commandsPath
 const commandsPath = path.join(__dirname, 'commands')
+//lê o commandsPath e filtra todos os arquivos terminados em .js e seta na variavel commandsFiles em formato de array
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 client.commands = new Collection()
-
+// pega todos os arquivos da pasta commands e coloca em 'file'
 for (const file of commandFiles){
+    //filePath recebe o caminho da pasta commands + o nome dos arquivos 'file'
     const filePath = path.join(commandsPath, file)
+    //command recebe todas as funções de todos os comandos na pasta commands
     const command = require(filePath)
-
+    
     if ('data' in command && 'execute' in command) {
         client.commands.set(command.data.name, command)
     } else{
@@ -43,7 +47,7 @@ client.on(Events.InteractionCreate, async interaction => {
             await interaction.reply("Documentação do C#: https://learn.microsoft.com/en-us/dotnet/csharp/")
         } else if (selected == "discordjs"){
             await interaction.reply("Documentação do Discord.js: https://discordjs.guide/#before-you-begin")
-        }
+        } 
     }
 
     if (!interaction.isChatInputCommand()) return
